@@ -445,7 +445,7 @@ body.view-paged .pager{display:flex}
 /* ---------- zoom bar（翻页态，顶部居中） ---------- */
 .zbar{
   position:fixed;top:10px;left:50%;transform:translateX(-50%) translateY(-8px);
-  z-index:70;display:none;align-items:center;gap:1px;
+  z-index:70;display:flex;align-items:center;gap:1px;
   padding:3px 8px;border-radius:999px;
   background:rgba(251,254,249,.96);
   border:1px solid #D6EFCE;
@@ -1407,6 +1407,8 @@ function setView(v){
     state.view = 'scroll';
     saveView();
     document.body.classList.remove('view-paged');
+    clearTimeout(pagerHideT);
+    if (zbar) zbar.classList.add('pager-show');
     stack.style.transform = '';
     stack.style.left = '';
     stack.style.top = '';
@@ -1441,6 +1443,7 @@ function fitZoom(){
     const z = clamp(base * userZoom, 0.36, ZOOM_MAX);
     document.documentElement.style.setProperty('--z', z.toFixed(4));
     layoutFrame();
+    updateZoomLabel();
   }
 }
 
@@ -1551,23 +1554,36 @@ frame.addEventListener('wheel', (e) => {
   gotoPage(pagedIndex + dir);
 }, { passive: false });
 
-// 鼠标拖拽平移：翻页模式放大溢出时，按住左键拖动查看（排除控件与文本选择）
-let dragOn = false, dragX = 0, dragY = 0;
+// 鼠标拖拽平移：两种模式都支持。翻页模式拖动 frame 内部滚动；
+// 滚动模式拖动整个窗口横向/纵向平移。仅在放大溢出时启用，避免影响正常选词。
+let dragOn = false, dragX = 0, dragY = 0, dragMode = 'paged';
 frame.addEventListener('mousedown', (e) => {
-  if (state.view !== 'paged' || e.button !== 0) return;
+  if (e.button !== 0) return;
   const tg = e.target;
   if (tg && tg.closest && tg.closest('.zbar, .pager, .sresults, button, input, label, a')) return;
-  const canH = frame.scrollWidth > frame.clientWidth + 1;
-  const canV = frame.scrollHeight > frame.clientHeight + 1;
-  if (!canH && !canV) return;
+  if (state.view === 'paged') {
+    const canH = frame.scrollWidth > frame.clientWidth + 1;
+    const canV = frame.scrollHeight > frame.clientHeight + 1;
+    if (!canH && !canV) return;
+    dragMode = 'paged';
+  } else {
+    // 滚动模式：仅在内容横向溢出（已放大）时可拖拽平移，否则保持正常文本选择
+    const canH = document.documentElement.scrollWidth > window.innerWidth + 1;
+    if (!canH) return;
+    dragMode = 'scroll';
+  }
   dragOn = true; dragX = e.clientX; dragY = e.clientY;
   e.preventDefault();
 });
 window.addEventListener('mousemove', (e) => {
   if (!dragOn) return;
   const dx = e.clientX - dragX, dy = e.clientY - dragY;
-  frame.scrollLeft -= dx;
-  frame.scrollTop  -= dy;
+  if (dragMode === 'paged') {
+    frame.scrollLeft -= dx;
+    frame.scrollTop  -= dy;
+  } else {
+    window.scrollBy(-dx, -dy);
+  }
   dragX = e.clientX; dragY = e.clientY;
   e.preventDefault();
 }, { passive: false });
