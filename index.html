@@ -1520,34 +1520,58 @@ frame.addEventListener('wheel', (e) => {
     const atBot = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
     if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBot)) return;
   }
+  const canH = frame.scrollWidth > frame.clientWidth + 1;
+  const canV = frame.scrollHeight > frame.clientHeight + 1;
   const horiz = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-  // 横向手势（触控板左右滑 / Shift+滚轮）：能平移就平移，到页边才翻页
-  if (horiz) {
+  // 横向手势（触控板左右滑 / Shift+滚轮）：能平移就真平移，到页边才翻页
+  if (horiz && canH) {
     e.preventDefault();
     const atStart = frame.scrollLeft <= 1;
     const atEnd = frame.scrollLeft + frame.clientWidth >= frame.scrollWidth - 1;
-    const toNext = e.deltaX < 0;             // 向右滚 → 看下一页方向
-    if (toNext ? !atEnd : !atStart) return;  // 该方向还能平移 → 不翻页
-    gotoPage(pagedIndex + (toNext ? 1 : -1));
-    return;
-  }
-  // 竖向手势：放大溢出时优先在此页内平移，到页边才翻页；否则直接翻页
-  if (curZoom() > 1.001 || frame.scrollHeight > frame.clientHeight + 1) {
+    const toNext = e.deltaX < 0;             // 向右滑 → 看下一页方向
+    if (toNext ? !atEnd : !atStart) { frame.scrollLeft += e.deltaX; return; }  // 还能横移 → 真平移
+    // 到页边 → 翻页
+  } else if (!horiz && canV) {
+    // 竖向手势：放大溢出时优先在此页内真平移，到页边才翻页
     e.preventDefault();
     const atTop = frame.scrollTop <= 1;
     const atBot = frame.scrollTop + frame.clientHeight >= frame.scrollHeight - 1;
     const down = e.deltaY > 0;
-    if (down ? !atBot : !atTop) return;      // 还能纵移 → 不翻页
-    // 到页边：翻页
+    if (down ? !atBot : !atTop) { frame.scrollTop += e.deltaY; return; }       // 还能纵移 → 真平移
+    // 到页边 → 翻页
   }
+  // 到页边（或无溢出空间）：翻页
   e.preventDefault();
   const now = Date.now();
   if (now - wheelLock < 480) return;
-  const d = e.deltaY;
+  const d = horiz ? e.deltaX : e.deltaY;
   if (Math.abs(d) < 10) return;
   wheelLock = now;
-  gotoPage(pagedIndex + (d > 0 ? 1 : -1));
+  const dir = horiz ? (e.deltaX < 0 ? 1 : -1) : (e.deltaY > 0 ? 1 : -1);
+  gotoPage(pagedIndex + dir);
 }, { passive: false });
+
+// 鼠标拖拽平移：翻页模式放大溢出时，按住左键拖动查看（排除控件与文本选择）
+let dragOn = false, dragX = 0, dragY = 0;
+frame.addEventListener('mousedown', (e) => {
+  if (state.view !== 'paged' || e.button !== 0) return;
+  const tg = e.target;
+  if (tg && tg.closest && tg.closest('.zbar, .pager, .sresults, button, input, label, a')) return;
+  const canH = frame.scrollWidth > frame.clientWidth + 1;
+  const canV = frame.scrollHeight > frame.clientHeight + 1;
+  if (!canH && !canV) return;
+  dragOn = true; dragX = e.clientX; dragY = e.clientY;
+  e.preventDefault();
+});
+window.addEventListener('mousemove', (e) => {
+  if (!dragOn) return;
+  const dx = e.clientX - dragX, dy = e.clientY - dragY;
+  frame.scrollLeft -= dx;
+  frame.scrollTop  -= dy;
+  dragX = e.clientX; dragY = e.clientY;
+  e.preventDefault();
+}, { passive: false });
+window.addEventListener('mouseup', () => { dragOn = false; });
 
 let tX = 0, tY = 0, tOn = false;
 frame.addEventListener('touchstart', (e) => {
