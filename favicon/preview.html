@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单词速刷表 · 图标预览</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  :root{
+    --ink:#21452C; --ink2:#2B3B2F; --muted:#6B876D; --faint:#79927C;
+    --green:#3F9152; --leaf:#7CB342; --bg:#E7EFE3; --card:#FBFEF9;
+    --line:#AAD3A0; --line2:#BEDDB5; --c1:#E4F6DE; --h1:#D6EFCE;
+    --h2:#E5F6DF; --h3:#F3FBEF;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:34px 22px 60px;
+    background:radial-gradient(900px 420px at 50% -80px,var(--h3),rgba(243,251,239,0)),var(--bg);
+    color:var(--ink2);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  .wrap{max-width:880px;margin:0 auto}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:8px}
+  header img{width:56px;height:56px;border-radius:12px;box-shadow:0 6px 18px rgba(51,105,30,.18)}
+  h1{margin:0;font-size:22px;color:var(--ink);letter-spacing:.3px}
+  .sub{margin:4px 0 0;font-size:12px;color:var(--muted)}
+  h2{font-size:14px;color:var(--ink);margin:34px 0 12px;letter-spacing:.5px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px}
+  .sizes{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end}
+  .size{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .size img{display:block;image-rendering:auto}
+  .size span{font-size:11px;color:var(--faint)}
+  .framebox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:center}
+  .dark{background:#1E2A22;border-color:#2C3B31}
+  .dark .framebox{background:#26332A;border-color:#37473B}
+  .dark span{color:#9DB3A2}
+
+  /* 模拟标签页 */
+  .tabbar{display:flex;align-items:flex-end;gap:6px;padding:8px 10px 0;background:var(--h1);border-radius:10px 10px 0 0}
+  .tab{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-bottom:0;
+       border-radius:8px 8px 0 0;padding:8px 12px 9px;min-width:190px;max-width:260px}
+  .tab img{width:16px;height:16px;display:block}
+  .tab b{font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tab i{margin-left:auto;font-style:normal;color:var(--line2);font-size:12px}
+  .pagebar{background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;padding:10px 12px;font-size:12px;color:var(--faint)}
+
+  /* 模拟收藏夹 */
+  .bmbar{display:flex;align-items:center;gap:10px;background:var(--h1);border-radius:10px;padding:8px 12px}
+  .bm{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+  .bm img{width:16px;height:16px;display:block}
+  .bm span{font-size:12px;color:var(--ink)}
+
+  /* iOS / Android 圆角、圆形蒙版 */
+  .masks{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+  .mask{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .ios{width:120px;height:120px;border-radius:27px;overflow:hidden;box-shadow:0 6px 18px rgba(33,69,44,.15)}
+  .and{width:120px;height:120px;border-radius:50%;overflow:hidden;box-shadow:0 6px 18px rgba(33,69,44,.15)}
+  .squircle{width:120px;height:120px;border-radius:26px;overflow:hidden;box-shadow:0 6px 18px rgba(33,69,44,.15)}
+  .ios img,.and img,.squircle img{width:100%;height:100%;display:block}
+
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--h2)}
+  th{color:var(--faint);font-weight:600;font-size:11px;letter-spacing:.4px}
+  td code{background:var(--h3);border:1px solid var(--h1);border-radius:4px;padding:1px 5px;font-size:11px;color:var(--ink)}
+  .note{font-size:12px;color:var(--muted);line-height:1.8;margin:10px 0 0}
+  pre{background:var(--h3);border:1px solid var(--h1);border-radius:8px;padding:12px 14px;overflow:auto;font-size:12px;line-height:1.7;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="android-chrome-192x192.png" alt="图标">
+    <div>
+      <h1>单词速刷表 · 图标套装</h1>
+      <p class="sub">网页标签 / 收藏夹 / 桌面快捷方式 / iOS / Android</p>
+    </div>
+  </header>
+
+  <h2>多尺寸预览</h2>
+  <div class="card">
+    <div class="sizes">
+      <div class="size"><img src="favicon-16x16.png" width="16" height="16" alt=""><span>16</span></div>
+      <div class="size"><img src="favicon-32x32.png" width="32" height="32" alt=""><span>32</span></div>
+      <div class="size"><img src="favicon-48x48.png" width="48" height="48" alt=""><span>48</span></div>
+      <div class="size"><img src="favicon-64x64.png" width="64" height="64" alt=""><span>64</span></div>
+      <div class="size"><img src="favicon-96x96.png" width="96" height="96" alt=""><span>96</span></div>
+      <div class="size"><img src="apple-touch-icon.png" width="120" height="120" alt="" style="width:120px;height:120px"><span>180（缩显）</span></div>
+      <div class="size"><img src="android-chrome-512x512.png" width="120" height="120" alt="" style="width:120px;height:120px"><span>512（缩显）</span></div>
+    </div>
+  </div>
+
+  <h2>浏览器标签页</h2>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div class="tabbar">
+      <div class="tab"><img src="favicon-16x16.png" alt=""><b>考研英语一 · 单词速刷表</b><i>×</i></div>
+      <div class="tab" style="opacity:.55"><img src="favicon-16x16.png" alt=""><b>新标签页</b><i>×</i></div>
+    </div>
+    <div class="pagebar">地址栏左侧显示的正是 16×16 图标</div>
+  </div>
+
+  <h2>收藏夹 / 书签栏</h2>
+  <div class="card">
+    <div class="bmbar">
+      <div class="bm"><img src="favicon-16x16.png" alt=""><span>单词速刷表</span></div>
+      <div class="bm" style="opacity:.6"><img src="favicon-16x16.png" alt=""><span>其他书签</span></div>
+    </div>
+  </div>
+
+  <h2>浅色 / 深色环境</h2>
+  <div class="card">
+    <div class="sizes">
+      <div class="size"><div class="framebox" style="width:96px;height:96px"><img src="favicon-48x48.png" width="48" height="48" alt=""></div><span>浅色</span></div>
+      <div class="size"><div class="framebox dark" style="width:96px;height:96px"><img src="favicon-48x48.png" width="48" height="48" alt=""></div><span>深色</span></div>
+    </div>
+  </div>
+
+  <h2>桌面图标蒙版效果</h2>
+  <div class="card">
+    <div class="masks">
+      <div class="mask"><div class="ios"><img src="apple-touch-icon.png" alt=""></div><span>iOS / iPadOS</span></div>
+      <div class="mask"><div class="squircle"><img src="android-chrome-512x512.png" alt=""></div><span>Android 圆角</span></div>
+      <div class="mask"><div class="and"><img src="android-chrome-512x512-maskable.png" alt=""></div><span>Android 圆形（maskable）</span></div>
+    </div>
+  </div>
+
+  <h2>文件清单</h2>
+  <div class="card">
+    <table>
+      <tr><th>文件</th><th>尺寸</th><th>用途</th></tr>
+      <tr><td><code>index.html</code></td><td>—</td><td>主页面（图标已内联，可单独打开）</td></tr>
+      <tr><td><code>sw.js</code></td><td>—</td><td>Service Worker，PWA 安装必需（须放根目录）</td></tr>
+      <tr><td><code>manifest.webmanifest</code></td><td>—</td><td>PWA 声明（放根目录，指向下方图标）</td></tr>
+      <tr><td><code>icon-192.png</code></td><td>192</td><td>Android 主屏幕</td></tr>
+      <tr><td><code>icon-512.png</code></td><td>512</td><td>Android 启动画面 / PWA</td></tr>
+      <tr><td><code>icon-maskable-512.png</code></td><td>512</td><td>Android 自适应图标</td></tr>
+      <tr><td colspan="3" style="color:var(--muted)">以下为 <code>favicon/</code> 完整素材备份（非必需）</td></tr>
+      <tr><td><code>favicon.ico</code></td><td>16/32/48/256</td><td>传统标签页、Windows 快捷方式</td></tr>
+      <tr><td><code>favicon.svg</code></td><td>矢量</td><td>现代浏览器标签页</td></tr>
+      <tr><td><code>favicon-16/32/48/64/96.png</code></td><td>各尺寸</td><td>标签页、书签、站点图标</td></tr>
+      <tr><td><code>apple-touch-icon.png</code></td><td>180</td><td>iOS / iPadOS 添加到主屏幕</td></tr>
+      <tr><td><code>safari-pinned-tab.svg</code></td><td>矢量</td><td>Safari 固定标签页（单色蒙版）</td></tr>
+      <tr><td><code>mstile-150x150.png</code></td><td>150</td><td>Windows 磁贴</td></tr>
+      <tr><td><code>browserconfig.xml</code></td><td>—</td><td>Windows 磁贴配置（旧版）</td></tr>
+    </table>
+  </div>
+
+  <h2>接入方式</h2>
+  <div class="card">
+    <p class="note">本仓库已按下列结构摆放，直接推送即可；<code>index.html</code> 的 <code>&lt;head&gt;</code> 中已有：</p>
+<pre>&lt;link rel="icon" type="image/svg+xml" href="data:..."&gt;      ← 内联，单文件可用
+&lt;link rel="icon" type="image/png" sizes="32x32" href="data:..."&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="data:..."&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="data:..."&gt;
+&lt;link rel="manifest" href="./manifest.webmanifest"&gt;   ← 安装用
+&lt;meta name="theme-color" content="#E7EFE3"&gt;</pre>
+    <p class="note"><code>favicon/</code> 是全套素材备份（含 ICO、各尺寸 PNG、Safari 蒙版、Windows 磁贴、说明文档与预览页）。不需要时可以不上传，不影响页面显示与安装。</p>
+  </div>
+
+  <h2>设计说明</h2>
+  <div class="card">
+    <p class="note">
+      <b>配色</b>：叶 <code>#7CB342</code>、描边 <code>#33691E</code>、花心 <code>#FFF59D</code>、背景 <code>#E3F0D9</code>。<br>
+      <b>16×16 加粗版</b>：原图描边缩到 16px 只剩约 0.7px 会糊成一团，小尺寸版把描边加到 30、整体放大 6%，保证标签页能看出五瓣花与花心。<br>
+      <b>maskable 版</b>：Android 自适应图标可能裁成圆形/方形/水滴形，内容缩到 85%，保证任何裁切都不切花。
+    </p>
+  </div>
+</div>
+</body>
+</html>
