@@ -5,15 +5,15 @@
  * 更新网页后：把下面的 CACHE 版本号 +1（如 dkz-v2），旧缓存会自动清理。
  */
 
-const CACHE = 'dkz-v3';
+const CACHE = 'dkz-v4';
 
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-maskable-512.png'
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-512.png'
 ];
 
 self.addEventListener('install', (e) => {
