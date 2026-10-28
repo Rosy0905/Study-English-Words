@@ -851,7 +851,20 @@ function anchorPoint(skipChecked){
   }
   return null;
 }
+/* 当前是否真的停在单词页（阅读态）：封面 / 搜索 / 说明页都算"非阅读态"。
+   回到这些页去点导入导出时，不能把阅读位置覆盖成封面，否则备份里的"上次看到
+   的那页"就丢了——这正是导入后跳不回原页的根因。 */
+function onWordPage(){
+  if (state.view === 'paged') {
+    const el = pagesAll()[pagedIndex];
+    return !!(el && el.classList.contains('word-page'));
+  }
+  const mid = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
+  const page = mid && mid.closest ? mid.closest('.page') : null;
+  return !!(page && page.classList.contains('word-page'));
+}
 function savePos(){
+  if (!onWordPage()) return; // 封面 / 搜索 / 说明页：保留上一次单词页的阅读位置，不覆盖
   if (state.view === 'paged') {
     try { localStorage.setItem(LS_POS, JSON.stringify({ view: 'paged', pg: pagedIndex })); } catch (e) {}
     return;
